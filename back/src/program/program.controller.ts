@@ -53,8 +53,13 @@ export class ProgramController {
         if (result.status == "0") {
             return {status: "success", error: []};
         } else {
-            //TODO: 行ごとに配列で返すように変更
-            return {status: "error", error: result.compiler_error};
+            //エラーごとに分割して配列に格納
+            let errors: string[] = [];
+            result.compiler_error.split('prog.cc:').forEach((value) => {
+                console.log(value);
+                errors.push(value);
+            })
+            return {status: "error", error: errors};
         }
     }
 }
