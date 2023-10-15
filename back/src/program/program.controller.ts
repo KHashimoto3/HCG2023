@@ -3,6 +3,7 @@ import { ExecInputDto } from './dto/exec-input.dto';
 import { HttpService } from '@nestjs/axios';
 import { WandboxOutputDto } from './dto/wandbox-output.dto';
 import { lastValueFrom, map } from 'rxjs';
+import { ErrorResolveInputDto } from './dto/error-resolve-input.dto';
 
 @Controller('program')
 export class ProgramController {
@@ -64,7 +65,7 @@ export class ProgramController {
     }
 
     @Post('/error-resolve')
-    errorResolve() {
+    errorResolve(@Body() errorResolveDto: ErrorResolveInputDto) {
         return {status: "hello! error-resolve api!"};
     }
 }
