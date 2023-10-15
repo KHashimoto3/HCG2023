@@ -102,7 +102,7 @@ export class ProgramController {
                     error: errorStr,
                     row: 0,
                     column: 0,
-                    description: "不明なエラーが発生しています。",
+                    description: "まれなエラーが発生しています。",
                     method: "TAに尋ねてみてください。"
                 };
                 resolveMethods.push(method);
