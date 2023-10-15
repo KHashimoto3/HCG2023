@@ -4,6 +4,8 @@ import { HttpService } from '@nestjs/axios';
 import { WandboxOutputDto } from './dto/wandbox-output.dto';
 import { lastValueFrom, map } from 'rxjs';
 import { ErrorResolveInputDto } from './dto/error-resolve-input.dto';
+import { ErrorResolveTableDto } from './dto/error-resolve-table.dto';
+import { ErrorResolveMethodsDto } from './dto/error-resolve-methods.dto';
 
 @Controller('program')
 export class ProgramController {
@@ -66,6 +68,47 @@ export class ProgramController {
 
     @Post('/error-resolve')
     errorResolve(@Body() errorResolveDto: ErrorResolveInputDto) {
-        return {status: "hello! error-resolve api!"};
+        const errors: string[] = errorResolveDto.errors;
+        let resolveMethods: ErrorResolveMethodsDto[] = [];
+        const errorTable: ErrorResolveTableDto[] = [
+            {
+                pattern: /was not declared in this scope/,
+                description: "宣言されていない{name}という名前のものが使用されています。",
+                resolveMethod: "{name}を宣言するか、宣言してある正しい名前に直してください。"
+            }
+        ]
+        //全てのエラーに対して、errorTableに該当するものがあるかを確認する
+        errors.map((errorStr) => {
+            if (errorStr != "") {
+                console.log("処理するエラー：" + errorStr);
+            let findFlag: boolean = false;
+            //パターンに一致するかどうか見る
+            errorTable.map((checkError) => {
+                if(errorStr.match(checkError.pattern)) {
+                    //TODO: 対象となる行と列を取り出す
+                    const method: ErrorResolveMethodsDto = {
+                        error: errorStr,
+                        row: 0,
+                        column: 0,
+                        description: checkError.description,
+                        method: checkError.resolveMethod
+                    };
+                    resolveMethods.push(method);
+                    findFlag = true;
+                }
+            })
+            if(!findFlag) {
+                const method: ErrorResolveMethodsDto = {
+                    error: errorStr,
+                    row: 0,
+                    column: 0,
+                    description: "不明なエラーが発生しています。",
+                    method: "TAに尋ねてみてください。"
+                };
+                resolveMethods.push(method);
+            }
+            }
+        })
+        return {resolve: resolveMethods};
     }
 }
