@@ -62,4 +62,9 @@ export class ProgramController {
             return {status: "error", error: errors};
         }
     }
+
+    @Post('/error-resolve')
+    errorResolve() {
+        return {status: "hello! error-resolve api!"};
+    }
 }
