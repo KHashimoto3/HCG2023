@@ -1,7 +1,11 @@
+import { Container } from "@mui/material";
+
 export const CodeCheckInput = () => {
   return (
     <>
-      <h1>左側のコンポーネントです。</h1>
+      <Container maxWidth="md">
+        <h1>左側のコンポーネントです。</h1>
+      </Container>
     </>
   );
 };
