@@ -1,7 +1,12 @@
 import { Box, Button, Container } from "@mui/material";
 import { CheckResult } from "./CheckResult";
 
-export const CodeCheckList = () => {
+type Props = {
+  checkCode: () => void;
+};
+
+export const CodeCheckList = (props: Props) => {
+  const { checkCode } = props;
   return (
     <>
       <Container maxWidth="md">
@@ -17,7 +22,7 @@ export const CodeCheckList = () => {
         >
           <CheckResult />
         </Box>
-        <Button variant="contained" sx={{ mt: 2 }}>
+        <Button variant="contained" sx={{ mt: 2 }} onClick={checkCode}>
           チェックする
         </Button>
       </Container>
