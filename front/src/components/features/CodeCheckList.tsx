@@ -5,7 +5,7 @@ export const CodeCheckList = () => {
   return (
     <>
       <Container maxWidth="md">
-        <h1>右側のコンポーネントです。</h1>
+        <h1>チェック結果が表示されます</h1>
         <Box
           sx={{
             justifyContent: "center",
