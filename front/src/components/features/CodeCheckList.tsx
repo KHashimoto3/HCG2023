@@ -3,10 +3,12 @@ import { CheckResult } from "./CheckResult";
 
 type Props = {
   checkCode: () => void;
+  checkButtonDisabled: boolean;
 };
 
 export const CodeCheckList = (props: Props) => {
   const { checkCode } = props;
+  const { checkButtonDisabled } = props;
   return (
     <>
       <Container maxWidth="md">
@@ -22,7 +24,12 @@ export const CodeCheckList = (props: Props) => {
         >
           <CheckResult />
         </Box>
-        <Button variant="contained" sx={{ mt: 2 }} onClick={checkCode}>
+        <Button
+          variant="contained"
+          sx={{ mt: 2 }}
+          onClick={checkCode}
+          disabled={checkButtonDisabled}
+        >
           チェックする
         </Button>
       </Container>

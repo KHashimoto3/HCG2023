@@ -8,17 +8,22 @@ export const CodeCheck = () => {
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
 
+  const [checkButtonDisabled, setCheckButtonDisabled] =
+    useState<boolean>(false);
+
   const [execResult, setExecResult] = useState<ExecResult>({
     status: "",
     error: [],
   });
 
   const checkCode = () => {
+    setCheckButtonDisabled(true);
     console.log("チェックします：" + code);
     execCode();
     console.log(
       "実行結果：" + execResult.status + "エラー：" + execResult.error
     );
+    setCheckButtonDisabled(false);
   };
 
   // exec apiに接続して、codeとinputを送信する
@@ -66,7 +71,10 @@ export const CodeCheck = () => {
           />
         </Grid>
         <Grid item xs={6}>
-          <CodeCheckList checkCode={checkCode} />
+          <CodeCheckList
+            checkCode={checkCode}
+            checkButtonDisabled={checkButtonDisabled}
+          />
         </Grid>
       </Grid>
     </>
