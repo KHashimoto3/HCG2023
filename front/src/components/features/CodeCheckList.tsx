@@ -1,4 +1,5 @@
 import { Box, Button, Container } from "@mui/material";
+import { CheckResult } from "./CheckResult";
 
 export const CodeCheckList = () => {
   return (
@@ -13,10 +14,10 @@ export const CodeCheckList = () => {
             padding: "10px",
             height: "400px",
           }}
-        ></Box>
-        <Button variant="contained" sx={{ mt: 2 }}>
-          チェック
-        </Button>
+        >
+          <CheckResult />
+        </Box>
+        <Button variant="contained" sx={{ mt: 2 }}></Button>
       </Container>
     </>
   );
