@@ -13,11 +13,7 @@ export const CodeCheckList = () => {
             padding: "10px",
             height: "400px",
           }}
-        >
-          <p>テキスト1</p>
-          <p>テキスト2</p>
-          <p>テキスト3</p>
-        </Box>
+        ></Box>
         <Button variant="contained" sx={{ mt: 2 }}>
           チェック
         </Button>
