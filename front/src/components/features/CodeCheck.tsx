@@ -2,13 +2,50 @@ import { Grid } from "@mui/material";
 import { CodeCheckInput } from "./CodeCheckInput";
 import { CodeCheckList } from "./CodeCheckList";
 import { useState } from "react";
+import { ExecResult } from "../../types/execResult";
 
 export const CodeCheck = () => {
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
 
+  const [execResultList, setExecResultList] = useState<ExecResult[]>([]);
+
   const checkCode = () => {
     console.log("チェックします：" + code);
+    execCode();
+    console.log("実行結果：" + execResultList);
+  };
+
+  // exec apiに接続して、codeとinputを送信する
+  // その結果をsetExecResultListに入れる
+  const execCode = async () => {
+    try {
+      //codeが殻の場合はエラーを返す
+      if (code === "") {
+        alert("コードが入力されていません");
+        return;
+      }
+      //inputが殻の場合は、inputにnoneを入れる
+      if (codeInput === "") {
+        setCodeInput("none");
+      }
+      const url = "http://localhost:3000/program/exec";
+      const dataObj = {
+        code: code,
+        input: codeInput,
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataObj),
+      });
+      const data = await response.json();
+      setExecResultList(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
