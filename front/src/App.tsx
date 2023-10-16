@@ -1,4 +1,4 @@
-import { CheckPage } from "./pages/CheckPage";
+import { CheckPage } from "./components/pages/CheckPage";
 
 function App() {
   return (
