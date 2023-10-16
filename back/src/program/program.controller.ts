@@ -6,6 +6,9 @@ import { lastValueFrom, map } from 'rxjs';
 import { ErrorResolveInputDto } from './dto/error-resolve-input.dto';
 import { ErrorResolveTableDto } from './dto/error-resolve-table.dto';
 import { ErrorResolveMethodsDto } from './dto/error-resolve-methods.dto';
+import { CheckMissInputDto } from './dto/check-miss-input.dto';
+import { MissTableDto } from './dto/miss-table.dto';
+import { FindMissesDto } from './dto/find-misses.dto';
 
 @Controller('program')
 export class ProgramController {
@@ -113,5 +116,29 @@ export class ProgramController {
       }
     });
     return { resolve: resolveMethods };
+  }
+
+  @Post('check-miss')
+  checkMiss(@Body() checkMissInputDto: CheckMissInputDto) {
+    const code = checkMissInputDto.code;
+    let findMisses: FindMissesDto[] = [];
+    const missTable: MissTableDto[] = [
+      { pattern: /std::cout/, description: '説明' },
+    ];
+    //コードの行ごとにミスが含まれるかを確かめる
+    const splitCode: string[] = code.split('\\n');
+    splitCode.map((row, index) => {
+      missTable.map((miss) => {
+        if (row.match(miss.pattern)) {
+          const findMiss: FindMissesDto = {
+            row: index + 1,
+            column: 0,
+            description: miss.description,
+          };
+          findMisses.push(findMiss);
+        }
+      });
+    });
+    return { misses: findMisses };
   }
 }

@@ -1,5 +1,5 @@
 export class ErrorResolveTableDto {
-    pattern: RegExp;
-    description: string;
-    resolveMethod: string;
+  pattern: RegExp;
+  description: string;
+  resolveMethod: string;
 }
