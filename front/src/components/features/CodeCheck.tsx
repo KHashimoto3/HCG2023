@@ -8,12 +8,17 @@ export const CodeCheck = () => {
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
 
-  const [execResultList, setExecResultList] = useState<ExecResult[]>([]);
+  const [execResult, setExecResult] = useState<ExecResult>({
+    status: "",
+    error: [],
+  });
 
   const checkCode = () => {
     console.log("チェックします：" + code);
     execCode();
-    console.log("実行結果：" + execResultList);
+    console.log(
+      "実行結果：" + execResult.status + "エラー：" + execResult.error
+    );
   };
 
   // exec apiに接続して、codeとinputを送信する
@@ -42,7 +47,8 @@ export const CodeCheck = () => {
         body: JSON.stringify(dataObj),
       });
       const data = await response.json();
-      setExecResultList(data);
+      console.log(data);
+      setExecResult(data);
     } catch (error) {
       console.error(error);
     }
