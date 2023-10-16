@@ -35,15 +35,16 @@ export const CodeCheck = () => {
         alert("コードが入力されていません");
         return;
       }
-      //inputが殻の場合は、inputにnoneを入れる
-      if (codeInput === "") {
-        setCodeInput("none");
-      }
-      const url = "http://localhost:3000/program/exec";
-      const dataObj = {
+      let dataObj = {
         code: code,
         input: codeInput,
       };
+      //inputが殻の場合は、inputにnoneを入れる
+      if (codeInput === "") {
+        dataObj.input = "none";
+      }
+      const url = "http://localhost:3000/program/exec";
+
       const response = await fetch(url, {
         method: "POST",
         headers: {
