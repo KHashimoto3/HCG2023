@@ -17,7 +17,9 @@ export const CodeCheckList = () => {
         >
           <CheckResult />
         </Box>
-        <Button variant="contained" sx={{ mt: 2 }}></Button>
+        <Button variant="contained" sx={{ mt: 2 }}>
+          チェックする
+        </Button>
       </Container>
     </>
   );
