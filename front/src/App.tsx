@@ -1,7 +1,9 @@
+import { CheckPage } from "./pages/CheckPage";
+
 function App() {
   return (
     <>
-      <h1>Hello, world!</h1>
+      <CheckPage />
     </>
   );
 }
