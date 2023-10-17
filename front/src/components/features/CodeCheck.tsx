@@ -3,6 +3,7 @@ import { CodeCheckInput } from "./CodeCheckInput";
 import { CodeCheckList } from "./CodeCheckList";
 import { useState } from "react";
 import { ExecResult } from "../../types/execResult";
+import { ErrorResolve } from "../../types/errorResolve";
 
 export const CodeCheck = () => {
   const [code, setCode] = useState<string>("");
@@ -11,18 +12,25 @@ export const CodeCheck = () => {
   const [checkButtonDisabled, setCheckButtonDisabled] =
     useState<boolean>(false);
 
-  const [execResult, setExecResult] = useState<ExecResult>({
-    status: "",
-    error: [],
-  });
-
   const checkCode = () => {
     setCheckButtonDisabled(true);
     console.log("チェックします：" + code);
-    execCode();
+    const checkCodeResult = execCode();
+    //dataがExeqResult型でない場合はreturnする
+    if (!("status" in checkCodeResult) || !("error" in checkCodeResult)) {
+      alert("方チェックのエラーが発生しました");
+      setCheckButtonDisabled(false);
+      return;
+    }
+
     console.log(
-      "実行結果：" + execResult.status + "エラー：" + execResult.error
+      "実行結果：" + checkCodeResult.status + "エラー：" + checkCodeResult.error
     );
+
+    const errorResolve = getErrorResolve(checkCodeResult.error);
+
+    console.log("エラーの対処法：" + errorResolve);
+
     setCheckButtonDisabled(false);
   };
 
@@ -52,9 +60,40 @@ export const CodeCheck = () => {
         },
         body: JSON.stringify(dataObj),
       });
+      //ステータスコードが200以外の場合はエラーを返す
+      if (response.status !== 200) {
+        alert("コードの実行時にエラーが発生しました。");
+        const data = {
+          status: "exit",
+          error: ["コードの実行時にエラーが発生しました。"],
+        };
+        return data;
+      }
+      const data = await response.json();
+      console.log("実行結果" + data.status + "エラー" + data.error);
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  //error-resolve apiを読んで、エラーの対処法を受け取る
+  const getErrorResolve = async (error: any) => {
+    try {
+      const url = "http://localhost:3000/program/error-resolve";
+      const dataObj = {
+        error: error,
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataObj),
+      });
       const data = await response.json();
       console.log(data);
-      setExecResult(data);
+      return data;
     } catch (error) {
       console.error(error);
     }
