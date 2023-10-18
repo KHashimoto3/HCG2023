@@ -128,6 +128,7 @@ export const CodeCheck = () => {
             checkCode={checkCode}
             checkButtonDisabled={checkButtonDisabled}
             errorResolveList={errorResolveList}
+            foundMissList={foundMissList}
           />
         </Grid>
       </Grid>
