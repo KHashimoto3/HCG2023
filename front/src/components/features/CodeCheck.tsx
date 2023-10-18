@@ -45,17 +45,6 @@ export const CodeCheck = () => {
         },
         body: JSON.stringify(dataObj),
       });
-      //ステータスコードが200以外の場合はエラーを返す
-      /*if (response.status !== 200) {
-        alert("コードの実行時にエラーが発生しました。200以外");
-        const data = {
-          status: "exit",
-          error: ["コードの実行時にエラーが発生しました。"],
-        };
-        execResult = data;
-        setCheckButtonDisabled(false);
-        return;
-      }*/
       execResult = await response.json();
       console.log("実行結果" + execResult.status + "エラー" + execResult.error);
     } catch (error) {
@@ -93,71 +82,6 @@ export const CodeCheck = () => {
 
     setCheckButtonDisabled(false);
   };
-
-  // exec apiに接続して、codeとinputを送信する
-  // その結果をsetExecResultListに入れる
-  /*const execCode = async () => {
-    try {
-      //codeが殻の場合はエラーを返す
-      if (code === "") {
-        alert("コードが入力されていません");
-        return;
-      }
-      let dataObj = {
-        code: code,
-        input: codeInput,
-      };
-      //inputが殻の場合は、inputにnoneを入れる
-      if (codeInput === "") {
-        dataObj.input = "none";
-      }
-      const url = "http://localhost:3000/program/exec";
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataObj),
-      });
-      //ステータスコードが200以外の場合はエラーを返す
-      if (response.status !== 200) {
-        alert("コードの実行時にエラーが発生しました。");
-        const data = {
-          status: "exit",
-          error: ["コードの実行時にエラーが発生しました。"],
-        };
-        return data;
-      }
-      const data = await response.json();
-      console.log("実行結果" + data.status + "エラー" + data.error);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  //error-resolve apiを読んで、エラーの対処法を受け取る
-  const getErrorResolve = async (error: any) => {
-    try {
-      const url = "http://localhost:3000/program/error-resolve";
-      const dataObj = {
-        error: error,
-      };
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataObj),
-      });
-      const data = await response.json();
-      console.log(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
-  };*/
 
   return (
     <>
