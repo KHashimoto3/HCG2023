@@ -3,32 +3,25 @@ import { CodeCheckInput } from "./CodeCheckInput";
 import { CodeCheckList } from "./CodeCheckList";
 import { useState } from "react";
 import { ExecResult } from "../../types/execResult";
+import { ErrorResolve } from "../../types/errorResolve";
 
 export const CodeCheck = () => {
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
 
+  const [errorResolveList, setErrorResolveList] = useState<ErrorResolve[]>([]);
+
   const [checkButtonDisabled, setCheckButtonDisabled] =
     useState<boolean>(false);
 
-  const [execResult, setExecResult] = useState<ExecResult>({
-    status: "",
-    error: [],
-  });
-
-  const checkCode = () => {
+  const checkCode = async () => {
     setCheckButtonDisabled(true);
     console.log("チェックします：" + code);
-    execCode();
-    console.log(
-      "実行結果：" + execResult.status + "エラー：" + execResult.error
-    );
-    setCheckButtonDisabled(false);
-  };
 
-  // exec apiに接続して、codeとinputを送信する
-  // その結果をsetExecResultListに入れる
-  const execCode = async () => {
+    let execResult: ExecResult;
+    let errorResolve: ErrorResolve[];
+
+    //exec apiに接続して、codeとinputを送信する
     try {
       //codeが殻の場合はエラーを返す
       if (code === "") {
@@ -52,12 +45,42 @@ export const CodeCheck = () => {
         },
         body: JSON.stringify(dataObj),
       });
-      const data = await response.json();
-      console.log(data);
-      setExecResult(data);
+      execResult = await response.json();
+      console.log("実行結果" + execResult.status + "エラー" + execResult.error);
     } catch (error) {
-      console.error(error);
+      alert("コードの実行時にエラーが発生しました。catch");
+      setCheckButtonDisabled(false);
+      return;
     }
+
+    if (execResult.error.length >= 1) {
+      //error-resolve apiに接続して、エラーの対処法を受け取る
+      try {
+        const url = "http://localhost:3000/program/error-resolve";
+        const dataObj = {
+          errors: execResult.error,
+        };
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataObj),
+        });
+        const recieveData = await response.json();
+        errorResolve = recieveData.resolve;
+        console.log("エラーの解決法のリスト" + errorResolve);
+        console.log(errorResolve);
+      } catch (error) {
+        alert("エラーの解決法の取得時にエラーが発生しました。");
+        setCheckButtonDisabled(false);
+        return;
+      }
+
+      setErrorResolveList(errorResolve);
+    }
+
+    setCheckButtonDisabled(false);
   };
 
   return (
@@ -75,6 +98,7 @@ export const CodeCheck = () => {
           <CodeCheckList
             checkCode={checkCode}
             checkButtonDisabled={checkButtonDisabled}
+            errorResolveList={errorResolveList}
           />
         </Grid>
       </Grid>
