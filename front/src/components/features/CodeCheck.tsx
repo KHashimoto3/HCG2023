@@ -9,6 +9,8 @@ export const CodeCheck = () => {
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
 
+  const [errorResolveList, setErrorResolveList] = useState<ErrorResolve[]>([]);
+
   const [checkButtonDisabled, setCheckButtonDisabled] =
     useState<boolean>(false);
 
@@ -17,7 +19,7 @@ export const CodeCheck = () => {
     console.log("チェックします：" + code);
 
     let execResult: ExecResult;
-    let errorResolve: ErrorResolve;
+    let errorResolve: ErrorResolve[];
 
     //exec apiに接続して、codeとinputを送信する
     try {
@@ -76,7 +78,8 @@ export const CodeCheck = () => {
           },
           body: JSON.stringify(dataObj),
         });
-        errorResolve = await response.json();
+        const recieveData = await response.json();
+        errorResolve = recieveData.resolve;
         console.log("エラーの解決法のリスト" + errorResolve);
         console.log(errorResolve);
       } catch (error) {
@@ -84,6 +87,8 @@ export const CodeCheck = () => {
         setCheckButtonDisabled(false);
         return;
       }
+
+      setErrorResolveList(errorResolve);
     }
 
     setCheckButtonDisabled(false);
@@ -169,6 +174,7 @@ export const CodeCheck = () => {
           <CodeCheckList
             checkCode={checkCode}
             checkButtonDisabled={checkButtonDisabled}
+            errorResolveList={errorResolveList}
           />
         </Grid>
       </Grid>
