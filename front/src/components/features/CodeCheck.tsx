@@ -11,9 +11,7 @@ export const CodeCheck = () => {
   const [codeInput, setCodeInput] = useState<string>("");
 
   const [errorResolveList, setErrorResolveList] = useState<ErrorResolve[]>([]);
-  const [checkMissResultList, setCheckMissResultList] = useState<
-    CheckMissResult[]
-  >([]);
+  const [foundMissList, setFoundMissList] = useState<CheckMissResult[]>([]);
 
   const [checkButtonDisabled, setCheckButtonDisabled] =
     useState<boolean>(false);
@@ -24,7 +22,7 @@ export const CodeCheck = () => {
 
     let execResult: ExecResult;
     let errorResolve: ErrorResolve[];
-    let checkMissResult: CheckMissResult[];
+    let foundMisses: CheckMissResult[];
 
     //exec apiに接続して、codeとinputを送信する
     try {
@@ -99,16 +97,16 @@ export const CodeCheck = () => {
         body: JSON.stringify(dataObj),
       });
       const recieveData = await response.json();
-      checkMissResult = recieveData.misses;
-      console.log("ありがちなミスのリスト" + checkMissResult);
-      console.log(checkMissResult);
+      foundMisses = recieveData.misses;
+      console.log("ありがちなミスのリスト" + foundMisses);
+      console.log(foundMisses);
     } catch (error) {
       alert("ありがちなミスの取得時にエラーが発生しました。");
       setCheckButtonDisabled(false);
       return;
     }
 
-    setCheckMissResultList(checkMissResult);
+    setFoundMissList(foundMisses);
     console.log("全ての処理が終了しました。");
 
     setCheckButtonDisabled(false);
