@@ -1,17 +1,20 @@
 import { Box, Button, Container } from "@mui/material";
 import { CheckResult } from "./CheckResult";
 import { ErrorResolve } from "../../types/errorResolve";
+import { CheckMissResult } from "../../types/checkMissResult";
 
 type Props = {
   checkCode: () => void;
   checkButtonDisabled: boolean;
   errorResolveList: ErrorResolve[];
+  foundMissList: CheckMissResult[];
 };
 
 export const CodeCheckList = (props: Props) => {
   const { checkCode } = props;
   const { checkButtonDisabled } = props;
   const { errorResolveList } = props;
+  const { foundMissList } = props;
   return (
     <>
       <Container maxWidth="md">
@@ -25,7 +28,10 @@ export const CodeCheckList = (props: Props) => {
             height: "400px",
           }}
         >
-          <CheckResult errorResolveList={errorResolveList} />
+          <CheckResult
+            errorResolveList={errorResolveList}
+            foundMissList={foundMissList}
+          />
         </Box>
         <Button
           variant="contained"

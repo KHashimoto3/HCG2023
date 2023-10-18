@@ -123,13 +123,14 @@ export class ProgramController {
     const code = checkMissInputDto.code;
     let findMisses: FindMissesDto[] = [];
     const missTable: MissTableDto[] = [
-      { pattern: /std::cout/, description: '説明' },
+      { pattern: /int a;/, description: '説明' },
     ];
     //コードの行ごとにミスが含まれるかを確かめる
     const splitCode: string[] = code.split('\\n');
     splitCode.map((row, index) => {
       missTable.map((miss) => {
         if (row.match(miss.pattern)) {
+          console.log('missを発見しました');
           const findMiss: FindMissesDto = {
             row: index + 1,
             column: 0,

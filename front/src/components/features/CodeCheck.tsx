@@ -4,12 +4,14 @@ import { CodeCheckList } from "./CodeCheckList";
 import { useState } from "react";
 import { ExecResult } from "../../types/execResult";
 import { ErrorResolve } from "../../types/errorResolve";
+import { CheckMissResult } from "../../types/checkMissResult";
 
 export const CodeCheck = () => {
   const [code, setCode] = useState<string>("");
   const [codeInput, setCodeInput] = useState<string>("");
 
   const [errorResolveList, setErrorResolveList] = useState<ErrorResolve[]>([]);
+  const [foundMissList, setFoundMissList] = useState<CheckMissResult[]>([]);
 
   const [checkButtonDisabled, setCheckButtonDisabled] =
     useState<boolean>(false);
@@ -20,6 +22,7 @@ export const CodeCheck = () => {
 
     let execResult: ExecResult;
     let errorResolve: ErrorResolve[];
+    let foundMisses: CheckMissResult[];
 
     //exec apiに接続して、codeとinputを送信する
     try {
@@ -80,6 +83,32 @@ export const CodeCheck = () => {
       setErrorResolveList(errorResolve);
     }
 
+    //check-miss-apiに接続して、ありがちなミスを受け取る
+    try {
+      const url = "http://localhost:3000/program/check-miss";
+      const dataObj = {
+        code: code,
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataObj),
+      });
+      const recieveData = await response.json();
+      foundMisses = recieveData.misses;
+      console.log("ありがちなミスのリスト" + foundMisses);
+      console.log(foundMisses);
+    } catch (error) {
+      alert("ありがちなミスの取得時にエラーが発生しました。");
+      setCheckButtonDisabled(false);
+      return;
+    }
+
+    setFoundMissList(foundMisses);
+    console.log("全ての処理が終了しました。");
+
     setCheckButtonDisabled(false);
   };
 
@@ -99,6 +128,7 @@ export const CodeCheck = () => {
             checkCode={checkCode}
             checkButtonDisabled={checkButtonDisabled}
             errorResolveList={errorResolveList}
+            foundMissList={foundMissList}
           />
         </Grid>
       </Grid>
