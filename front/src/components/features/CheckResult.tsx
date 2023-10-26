@@ -1,3 +1,4 @@
+import { Chip, Typography } from "@mui/material";
 import { CheckMissResult } from "../../types/checkMissResult";
 import { ErrorResolve } from "../../types/errorResolve";
 
@@ -17,14 +18,15 @@ export const CheckResult = (props: Props) => {
         {errorResolveList.map((errorResolve, index) => (
           <>
             <div key={index}>
-              <p>
-                必ず修正！ {errorResolve.row}行目 {errorResolve.column}文字目
-              </p>
-              <p style={{ fontSize: "16pt" }}>{errorResolve.description}</p>
+              <Typography variant="h6">
+                <Chip label="必ず修正" color="error" /> {errorResolve.row}行目{" "}
+                {errorResolve.column}文字目
+              </Typography>
+              <Typography variant="h5">{errorResolve.description}</Typography>
               <textarea defaultValue={errorResolve.error} cols={40} />
-              <p>どうすればよい？</p>
+              <Typography variant="h6">修正方法</Typography>
               <div style={{ background: "#fffee8" }}>
-                <p>{errorResolve.method}</p>
+                <Typography variant="body1">{errorResolve.method}</Typography>
               </div>
               <hr />
             </div>
@@ -33,10 +35,10 @@ export const CheckResult = (props: Props) => {
         {foundMissList.map((foundMiss, index) => (
           <>
             <div key={index}>
-              <p>
-                確認 {foundMiss.row}行目 {foundMiss.column}文字目
-              </p>
-              <p style={{ fontSize: "16pt" }}>{foundMiss.description}</p>
+              <Typography variant="h6">
+                <Chip label="確認" color="warning" /> {foundMiss.row}行目
+              </Typography>
+              <Typography variant="h5">{foundMiss.description}</Typography>
               <hr />
             </div>
           </>
