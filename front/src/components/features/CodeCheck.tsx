@@ -29,6 +29,7 @@ export const CodeCheck = () => {
       //codeが殻の場合はエラーを返す
       if (code === "") {
         alert("コードが入力されていません");
+        setCheckButtonDisabled(false);
         return;
       }
       let dataObj = {
@@ -81,6 +82,8 @@ export const CodeCheck = () => {
       }
 
       setErrorResolveList(errorResolve);
+    } else {
+      setErrorResolveList([]);
     }
 
     //check-miss-apiに接続して、ありがちなミスを受け取る

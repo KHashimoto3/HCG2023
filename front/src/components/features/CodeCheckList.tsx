@@ -26,6 +26,7 @@ export const CodeCheckList = (props: Props) => {
             border: "1px solid black",
             padding: "10px",
             height: "400px",
+            overflow: "scroll",
           }}
         >
           <CheckResult
