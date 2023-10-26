@@ -17,13 +17,15 @@ export const CheckResult = (props: Props) => {
         {errorResolveList.map((errorResolve, index) => (
           <>
             <div key={index}>
-              <p>必ず修正！</p>
               <p>
-                {errorResolve.row}行目 {errorResolve.column}文字目
+                必ず修正！ {errorResolve.row}行目 {errorResolve.column}文字目
               </p>
-              <p>{errorResolve.description}</p>
-              <p>{errorResolve.error}</p>
-              <p>{errorResolve.method}</p>
+              <p style={{ fontSize: "16pt" }}>{errorResolve.description}</p>
+              <textarea defaultValue={errorResolve.error} cols={40} />
+              <p>どうすればよい？</p>
+              <div style={{ background: "#fffee8" }}>
+                <p>{errorResolve.method}</p>
+              </div>
               <hr />
             </div>
           </>
@@ -31,11 +33,10 @@ export const CheckResult = (props: Props) => {
         {foundMissList.map((foundMiss, index) => (
           <>
             <div key={index}>
-              <p>確認</p>
               <p>
-                {foundMiss.row}行目 {foundMiss.column}文字目
+                確認 {foundMiss.row}行目 {foundMiss.column}文字目
               </p>
-              <p>{foundMiss.description}</p>
+              <p style={{ fontSize: "16pt" }}>{foundMiss.description}</p>
               <hr />
             </div>
           </>
