@@ -82,6 +82,8 @@ export const CodeCheck = () => {
       }
 
       setErrorResolveList(errorResolve);
+    } else {
+      setErrorResolveList([]);
     }
 
     //check-miss-apiに接続して、ありがちなミスを受け取る
