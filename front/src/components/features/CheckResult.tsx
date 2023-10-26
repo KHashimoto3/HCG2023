@@ -23,7 +23,12 @@ export const CheckResult = (props: Props) => {
                 {errorResolve.column}文字目
               </Typography>
               <Typography variant="h5">{errorResolve.description}</Typography>
-              <textarea defaultValue={errorResolve.error} cols={40} />
+              <textarea
+                defaultValue={errorResolve.error}
+                cols={60}
+                rows={4}
+                style={{ fontSize: "12pt" }}
+              />
               <Typography variant="h6">修正方法</Typography>
               <div style={{ background: "#fffee8" }}>
                 <Typography variant="body1">{errorResolve.method}</Typography>
