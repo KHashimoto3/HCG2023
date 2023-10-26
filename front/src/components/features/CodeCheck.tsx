@@ -29,6 +29,7 @@ export const CodeCheck = () => {
       //codeが殻の場合はエラーを返す
       if (code === "") {
         alert("コードが入力されていません");
+        setCheckButtonDisabled(false);
         return;
       }
       let dataObj = {
