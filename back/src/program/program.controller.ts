@@ -84,9 +84,15 @@ export class ProgramController {
       },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
+    const placeTmp = /\d+:\d+:/; //行と列の場所を取り出すためのテンプレ
     errors.map((errorStr) => {
       if (errorStr != '') {
         console.log('処理するエラー：' + errorStr);
+        const place = errorStr.split(placeTmp);
+        const rowAndColumn = place[1].split(/\d+/);
+        console.log('rowAndColumn: ' + rowAndColumn);
+        console.log('エラー行：' + rowAndColumn[0]);
+        console.log('エラー列：' + rowAndColumn[1]);
         let findFlag: boolean = false;
         //パターンに一致するかどうか見る
         errorTable.map((checkError) => {
@@ -94,8 +100,8 @@ export class ProgramController {
             //TODO: 対象となる行と列を取り出す
             const method: ErrorResolveMethodsDto = {
               error: errorStr,
-              row: 0,
-              column: 0,
+              row: Number(rowAndColumn[0]),
+              column: Number(rowAndColumn[1]),
               description: checkError.description,
               method: checkError.resolveMethod,
             };
