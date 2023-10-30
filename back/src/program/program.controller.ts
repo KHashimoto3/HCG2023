@@ -89,9 +89,10 @@ export class ProgramController {
       },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
+    const placeTmp = /:/; //行と列の場所を取り出すためのテンプレ
     errors.map((errorStr) => {
       if (errorStr != '') {
-        console.log('処理するエラー：' + errorStr);
+        const place = errorStr.split(placeTmp);
         let findFlag: boolean = false;
         //パターンに一致するかどうか見る
         errorTable.map((checkError) => {
@@ -99,8 +100,8 @@ export class ProgramController {
             //TODO: 対象となる行と列を取り出す
             const method: ErrorResolveMethodsDto = {
               error: errorStr,
-              row: 0,
-              column: 0,
+              row: Number(place[0]),
+              column: Number(place[1]),
               description: checkError.description,
               method: checkError.resolveMethod,
             };
@@ -111,8 +112,8 @@ export class ProgramController {
         if (!findFlag) {
           const method: ErrorResolveMethodsDto = {
             error: errorStr,
-            row: 0,
-            column: 0,
+            row: Number(place[0]),
+            column: Number(place[1]),
             description: 'まれなエラーが発生しています。',
             method: 'TAに尋ねてみてください。',
           };
