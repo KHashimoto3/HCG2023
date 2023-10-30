@@ -92,10 +92,7 @@ export class ProgramController {
     const placeTmp = /:/; //行と列の場所を取り出すためのテンプレ
     errors.map((errorStr) => {
       if (errorStr != '') {
-        console.log('処理するエラー：' + errorStr);
         const place = errorStr.split(placeTmp);
-        console.log('エラー行：' + place[0]);
-        console.log('エラー列：' + place[1]);
         let findFlag: boolean = false;
         //パターンに一致するかどうか見る
         errorTable.map((checkError) => {
