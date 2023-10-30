@@ -62,9 +62,14 @@ export class ProgramController {
     } else {
       //エラーごとに分割して配列に格納
       let errors: string[] = [];
-      result.compiler_error.split('prog.cc:').forEach((value) => {
-        console.log(value);
-        errors.push(value);
+      console.log('ローデータ：' + result.compiler_error);
+      result.compiler_error.split('prog.cc:').forEach((value, index) => {
+        console.log(index + '番目：' + value);
+        if (value.match(/\d+:\d+:/)) {
+          console.log(index + '番目を処理');
+          console.log(value);
+          errors.push(value);
+        }
       });
       return { status: 'error', error: errors };
     }
