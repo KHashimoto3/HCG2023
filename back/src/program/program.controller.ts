@@ -79,6 +79,7 @@ export class ProgramController {
   errorResolve(@Body() errorResolveDto: ErrorResolveInputDto) {
     const errors: string[] = errorResolveDto.errors;
     let resolveMethods: ErrorResolveMethodsDto[] = [];
+    //変更場所: エラーのパターンや説明を追加するにはここを編集する
     const errorTable: ErrorResolveTableDto[] = [
       {
         pattern: /was not declared in this scope/,
@@ -86,6 +87,12 @@ export class ProgramController {
           '宣言されていない{name}という名前のものが使用されています。',
         resolveMethod:
           '{name}を宣言するか、宣言してある正しい名前に直してください。',
+      },
+      {
+        pattern: /expected '\S+' before '\S+'/,
+        description:
+          '{position}の前に、{name}があるはずですが、忘れているようです。',
+        resolveMethod: '{position}の前に、{name}を追加してください。',
       },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
