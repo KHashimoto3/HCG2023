@@ -80,7 +80,6 @@ export const CodeCheck = () => {
         setCheckButtonDisabled(false);
         return;
       }
-
       setErrorResolveList(errorResolve);
     } else {
       setErrorResolveList([]);
