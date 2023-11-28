@@ -28,7 +28,7 @@ export class ProgramController {
       bodyData = {
         code: code,
         options: 'warning,gnu++1y',
-        compiler: 'gcc-head',
+        compiler: 'gcc-13.2.0-c',
         'compiler-option-raw': '-Dx=hogefuga\n-O3',
       };
     } else {
@@ -36,7 +36,7 @@ export class ProgramController {
         code: code,
         stdin: input,
         options: 'warning,gnu++1y',
-        compiler: 'gcc-head',
+        compiler: 'gcc-13.2.0-c',
         'compiler-option-raw': '-Dx=hogefuga\n-O3',
       };
     }
@@ -63,7 +63,7 @@ export class ProgramController {
       //エラーごとに分割して配列に格納
       let errors: string[] = [];
       console.log('ローデータ：' + result.compiler_error);
-      result.compiler_error.split('prog.cc:').forEach((value, index) => {
+      result.compiler_error.split('prog.c:').forEach((value, index) => {
         console.log(index + '番目：' + value);
         if (value.match(/\d+:\d+:/)) {
           console.log(index + '番目を処理');
@@ -79,13 +79,47 @@ export class ProgramController {
   errorResolve(@Body() errorResolveDto: ErrorResolveInputDto) {
     const errors: string[] = errorResolveDto.errors;
     let resolveMethods: ErrorResolveMethodsDto[] = [];
+    //変更場所: エラーのパターンや説明を追加するにはここを編集する
     const errorTable: ErrorResolveTableDto[] = [
       {
-        pattern: /was not declared in this scope/,
+        pattern: /expected '\S+' before '\S+'/,
         description:
-          '宣言されていない{name}という名前のものが使用されています。',
+          '{position}の前に、{name}があるはずですが、忘れているようです。',
+        resolveMethod: '{position}の前に、{name}を追加してください。',
+      },
+      {
+        pattern: /expected declaration or statement at end of input/,
+        description: '閉じの中カッコの数が足りません。',
         resolveMethod:
-          '{name}を宣言するか、宣言してある正しい名前に直してください。',
+          '開きカッコと閉じカッコの対応が取れているか確認してください。',
+      },
+      {
+        pattern: /undeclared (first use in this function)/,
+        description: '宣言されていない変数{name}を使おうとしています。',
+        resolveMethod: '変数{name}を宣言するか、正しい変数名に直してください。',
+      },
+      {
+        pattern: /implicit declaration of function '\S+'; did you mean '\S+'? /,
+        description:
+          '宣言されていない関数{name}を使おうとしています。{name}の間違いですか？',
+        resolveMethod: '関数{name}を宣言するか、正しい関数名に直してください。',
+      },
+      {
+        pattern: /implicit declaration of function '\S+' /,
+        description: '宣言されていない関数{name}を使おうとしています。',
+        resolveMethod: '関数{name}を宣言するか、正しい関数名に直してください。',
+      },
+      {
+        pattern: /\S+: No such file or directory/,
+        description: '{name}は存在しないファイルです。',
+        resolveMethod:
+          '{name}というファイルを作成するか、正しいファイル名（パス）に直してください',
+      },
+      {
+        pattern: /incompatible implicit declaration of built-in function '\S+'/,
+        description: '{name}は存在しないファイルです。',
+        resolveMethod:
+          '{name}というファイルを作成するか、正しいファイル名（パス）に直してください',
       },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
