@@ -10,6 +10,7 @@ type Props = {
 export const CheckResult = (props: Props) => {
   const { errorResolveList } = props;
   const { foundMissList } = props;
+
   if (errorResolveList.length === 0 && foundMissList.length === 0) {
     return <p>おめでとうございます。問題は見つかりませんでした。</p>;
   } else {
@@ -24,7 +25,7 @@ export const CheckResult = (props: Props) => {
               </Typography>
               <Typography variant="h5">{errorResolve.description}</Typography>
               <textarea
-                defaultValue={errorResolve.error}
+                value={errorResolve.error}
                 cols={60}
                 rows={4}
                 style={{ fontSize: "12pt" }}
