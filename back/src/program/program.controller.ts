@@ -131,13 +131,18 @@ export class ProgramController {
         //パターンに一致するかどうか見る
         errorTable.map((checkError) => {
           if (errorStr.match(checkError.pattern)) {
-            //TODO: 対象となる行と列を取り出す
+            //エラー文と説明文、解決方法の文をreplaceNameに渡し、{name}を置き換える
+            const [newErrorStr, newDescription, newMethod] = this.replaceName(
+              errorStr,
+              checkError.description,
+              checkError.resolveMethod,
+            );
             const method: ErrorResolveMethodsDto = {
-              error: errorStr,
+              error: newErrorStr,
               row: Number(place[0]),
               column: Number(place[1]),
-              description: checkError.description,
-              method: checkError.resolveMethod,
+              description: newDescription,
+              method: newMethod,
             };
             resolveMethods.push(method);
             findFlag = true;
@@ -181,5 +186,19 @@ export class ProgramController {
       });
     });
     return { misses: findMisses };
+  }
+
+  //エラー文と説明文、解決方法の文を受け取って、{name}を置き換える
+  replaceName(error: string, description: string, method: string): string[] {
+    //受け取ったerrorから、''で囲まれた文字列を取り出す
+    const nameTmp = /'\S+'/;
+    const name = error.match(nameTmp)[0];
+    const errorStr = error.replace('{name}', name);
+    const descriptionStr = description.replace('{name}', name);
+    const methodStr = method.replace('{name}', name);
+    console.log(
+      '置き換え後の説明文と解決方法文: ' + descriptionStr + ' ' + methodStr,
+    );
+    return [errorStr, descriptionStr, methodStr];
   }
 }
