@@ -133,7 +133,7 @@ export class ProgramController {
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
     const placeTmp = /:/; //行と列の場所を取り出すためのテンプレ
     errors.map((errorStr) => {
-      if (errorStr != '') {
+      if (errorStr != '' && errorStr.match(/error/)) {
         const place = errorStr.split(placeTmp);
         let findFlag: boolean = false;
         //パターンに一致するかどうか見る
