@@ -86,40 +86,48 @@ export class ProgramController {
         description:
           '{position}の前に、{name}があるはずですが、忘れているようです。',
         resolveMethod: '{position}の前に、{name}を追加してください。',
+        replaceList: ['name', 'position'],
       },
       {
         pattern: /expected declaration or statement at end of input/,
         description: '閉じの中カッコの数が足りません。',
         resolveMethod:
           '開きカッコと閉じカッコの対応が取れているか確認してください。',
+        replaceList: [],
       },
       {
         pattern: /undeclared (first use in this function)/,
         description: '宣言されていない変数{name}を使おうとしています。',
         resolveMethod: '変数{name}を宣言するか、正しい変数名に直してください。',
+        replaceList: ['name'],
       },
       {
         pattern: /implicit declaration of function '\S+'; did you mean '\S+'? /,
         description:
-          '宣言されていない関数{name}を使おうとしています。{name}の間違いですか？',
-        resolveMethod: '関数{name}を宣言するか、正しい関数名に直してください。',
+          '宣言されていない関数{name1}を使おうとしています。{name2}の間違いですか？',
+        resolveMethod:
+          '関数{name1}を宣言するか、正しい関数名{name2}に直してください。',
+        replaceList: ['name1', 'name2'],
       },
       {
         pattern: /implicit declaration of function '\S+' /,
         description: '宣言されていない関数{name}を使おうとしています。',
         resolveMethod: '関数{name}を宣言するか、正しい関数名に直してください。',
+        replaceList: ['name'],
       },
       {
         pattern: /\S+: No such file or directory/,
         description: '{name}は存在しないファイルです。',
         resolveMethod:
           '{name}というファイルを作成するか、正しいファイル名（パス）に直してください',
+        replaceList: ['name'],
       },
       {
         pattern: /incompatible implicit declaration of built-in function '\S+'/,
         description: '{name}は存在しないファイルです。',
         resolveMethod:
           '{name}というファイルを作成するか、正しいファイル名（パス）に直してください',
+        replaceList: ['name'],
       },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
@@ -136,6 +144,7 @@ export class ProgramController {
               errorStr,
               checkError.description,
               checkError.resolveMethod,
+              checkError.replaceList,
             );
             const method: ErrorResolveMethodsDto = {
               error: newErrorStr,
@@ -189,16 +198,42 @@ export class ProgramController {
   }
 
   //エラー文と説明文、解決方法の文を受け取って、{name}を置き換える
-  replaceName(error: string, description: string, method: string): string[] {
-    //受け取ったerrorから、''で囲まれた文字列を取り出す
-    const nameTmp = /'\S+'/;
-    const name = error.match(nameTmp)[0];
+  replaceName(
+    error: string,
+    description: string,
+    method: string,
+    replaceList: string[],
+  ): string[] {
+    if (replaceList.length == 0) {
+      return [error, description, method];
+    }
+    //受け取ったerrorから、''で囲まれた文字列をすべて取り出す
+    const nameTmp = /'\S+'/g;
+    const nameList = error.match(nameTmp);
+    if (nameList == null) {
+      return [error, description, method];
+    }
+
+    console.log('nameListは: ' + nameList);
+
+    //全てを置き換える。それぞれのnameを、replaceListが持っている場所に置き換える
+    nameList.map((name) => {
+      const replaceName = '{' + replaceList[nameList.indexOf(name)] + '}';
+      console.log(replaceName + 'を' + name + 'に置き換えます');
+      description = description.replace(replaceName, name);
+      method = method.replace(replaceName, name);
+      console.log(
+        '置き換え後の説明文と解決方法文: ' + description + ' ' + method,
+      );
+    });
+
+    /*const name = error.match(nameTmp)[0];
     const errorStr = error.replace('{name}', name);
     const descriptionStr = description.replace('{name}', name);
     const methodStr = method.replace('{name}', name);
     console.log(
       '置き換え後の説明文と解決方法文: ' + descriptionStr + ' ' + methodStr,
-    );
-    return [errorStr, descriptionStr, methodStr];
+    );*/
+    return [error, description, method];
   }
 }
