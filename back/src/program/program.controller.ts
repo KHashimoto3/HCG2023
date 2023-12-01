@@ -96,12 +96,6 @@ export class ProgramController {
         replaceList: [],
       },
       {
-        pattern: /undeclared (first use in this function)/,
-        description: '宣言されていない変数{name}を使おうとしています。',
-        resolveMethod: '変数{name}を宣言するか、正しい変数名に直してください。',
-        replaceList: ['name'],
-      },
-      {
         pattern: /implicit declaration of function '\S+'; did you mean '\S+'? /,
         description:
           '宣言されていない関数{name1}を使おうとしています。{name2}の間違いですか？',
@@ -129,6 +123,12 @@ export class ProgramController {
           '{name}というファイルを作成するか、正しいファイル名（パス）に直してください',
         replaceList: ['name'],
       },
+      {
+        pattern: /undeclared/,
+        description: '宣言されていない変数{name}を使おうとしています。',
+        resolveMethod: '変数{name}を宣言するか、正しい変数名に直してください。',
+        replaceList: ['name'],
+      },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
     const placeTmp = /:/; //行と列の場所を取り出すためのテンプレ
@@ -139,6 +139,7 @@ export class ProgramController {
         //パターンに一致するかどうか見る
         errorTable.map((checkError) => {
           if (errorStr.match(checkError.pattern)) {
+            console.log('エラーを発見しました');
             //エラー文と説明文、解決方法の文をreplaceNameに渡し、{name}を置き換える
             const [newErrorStr, newDescription, newMethod] = this.replaceName(
               errorStr,
@@ -154,6 +155,7 @@ export class ProgramController {
               method: newMethod,
             };
             resolveMethods.push(method);
+
             findFlag = true;
           }
         });
