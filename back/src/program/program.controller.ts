@@ -150,6 +150,29 @@ export class ProgramController {
         resolveMethod: '扱う方を揃えてください。。',
         replaceList: ['type1', 'type2', 'type3'],
       },
+      {
+        pattern: /too few arguments to function '\S+'/,
+        description: '関数{name}に渡す引数が足りません。',
+        resolveMethod:
+          '関数{name}に渡す必要がある引数を確認して、それを追加してください。',
+        replaceList: ['name'],
+      },
+      {
+        pattern: /too many arguments to function '\S+'/,
+        description: '関数{name}に渡す引数が多すぎます。',
+        resolveMethod:
+          '関数{name}に渡す必要がある引数を確認して、必要のない引数を消してください。',
+        replaceList: ['name'],
+      },
+      {
+        pattern:
+          /format '\S+' expects argument of type '\S+', but argument 2 has type '\S+'/,
+        description:
+          'フォーマットの{type1}は{type2}型の値を出すためのものですが、実際に渡されているものは{type3}型です。',
+        resolveMethod:
+          '{type2}の値を出すつもりでない場合は、渡す変数の型{type3}に合わせて、フォーマットの{type1}を変更してください。',
+        replaceList: ['type1', 'type2', 'type3'],
+      },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
     const placeTmp = /:/; //行と列の場所を取り出すためのテンプレ
