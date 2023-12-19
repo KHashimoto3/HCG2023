@@ -129,11 +129,58 @@ export class ProgramController {
         resolveMethod: '変数{name}を宣言するか、正しい変数名に直してください。',
         replaceList: ['name'],
       },
+      {
+        pattern: /suggest parentheses around assignment used as truth value/,
+        description: '真理値として使用される代入を括弧で囲むことを提案します',
+        resolveMethod: '等しいかの比較には=ではなく、==を使用します。',
+        replaceList: [],
+      },
+      {
+        pattern: /'\S+' is used uninitialized/,
+        description: '{name}が初期化されずに使用されています。',
+        resolveMethod:
+          '{name}を初期化してから加算やインクリメントをしてください。',
+        replaceList: ['name'],
+      },
+      {
+        pattern:
+          /format '\S+' expects argument of type '\S+', but argument 2 has type '\S' /,
+        description:
+          'フォーマットの{type1}は{type2}型の値を出すためのものですが、実際に渡されているものは{type3}型です。',
+        resolveMethod: '扱う方を揃えてください。。',
+        replaceList: ['type1', 'type2', 'type3'],
+      },
+      {
+        pattern: /too few arguments to function '\S+'/,
+        description: '関数{name}に渡す引数が足りません。',
+        resolveMethod:
+          '関数{name}に渡す必要がある引数を確認して、それを追加してください。',
+        replaceList: ['name'],
+      },
+      {
+        pattern: /too many arguments to function '\S+'/,
+        description: '関数{name}に渡す引数が多すぎます。',
+        resolveMethod:
+          '関数{name}に渡す必要がある引数を確認して、必要のない引数を消してください。',
+        replaceList: ['name'],
+      },
+      {
+        pattern:
+          /format '\S+' expects argument of type '\S+', but argument 2 has type '\S+'/,
+        description:
+          'フォーマットの{type1}は{type2}型の値を出すためのものですが、実際に渡されているものは{type3}型です。',
+        resolveMethod:
+          '{type2}の値を出すつもりでない場合は、渡す変数の型{type3}に合わせて、フォーマットの{type1}を変更してください。',
+        replaceList: ['type1', 'type2', 'type3'],
+      },
     ];
     //全てのエラーに対して、errorTableに該当するものがあるかを確認する
     const placeTmp = /:/; //行と列の場所を取り出すためのテンプレ
     errors.map((errorStr) => {
-      if (errorStr != '' && errorStr.match(/error/)) {
+      if (
+        errorStr != '' &&
+        (errorStr.match(/error/) || errorStr.match(/warning/))
+      ) {
         const place = errorStr.split(placeTmp);
         let findFlag: boolean = false;
         //パターンに一致するかどうか見る
@@ -179,7 +226,22 @@ export class ProgramController {
     const code = checkMissInputDto.code;
     let findMisses: FindMissesDto[] = [];
     const missTable: MissTableDto[] = [
-      { pattern: /int a;/, description: '説明' },
+      {
+        pattern: /if (\S+=\S+)/,
+        description: 'ifで等しいかを判定するには、=ではなく==を使用します。',
+      },
+      {
+        pattern: /if(\S+=\S+)/,
+        description: 'ifで等しいかを判定するには、=ではなく==を使用します。',
+      },
+      {
+        pattern: /for (\S+);/,
+        description: 'for文の括弧の直後に;があります。',
+      },
+      {
+        pattern: /for(\S+);/,
+        description: 'for文の括弧の直後に;があります。',
+      },
     ];
     //コードの行ごとにミスが含まれるかを確かめる
     const splitCode: string[] = code.split('\\n');
